@@ -7,10 +7,10 @@ import (
 )
 
 func main() {
-	res := geneslic.Uniq([]string{"one", "one", "two", "three"})
+	res := geneslic.UniqStrings([]string{"one", "one", "two", "three"})
 	log.Println(res)
-	res = geneslic.GeneUniq([]string{"one", "one", "two", "three"})
-	log.Println(res)
-	resint := geneslic.GeneUniq([]int{1, 1, 2, 3})
-	log.Println(resint)
+	//res = geneslic.GeneUniq([]string{"one", "one", "two", "three"})
+	//log.Println(res)
+	//resint := geneslic.GeneUniq([]int{1, 1, 2, 3})
+	//log.Println(resint)
 }
