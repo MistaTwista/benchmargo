@@ -1,11 +1,13 @@
 package genechan
 
+func chanputin(ch chan int, some int) {
+	ch <- some
+}
+
 func Proc(num int) int {
 	resCh := make(chan int)
 
-	go func(some int) {
-		resCh <- some
-	}(num)
+	go chanputin(resCh, num)
 
 	return <-resCh
 }
@@ -25,47 +27,27 @@ func GProc[T numbers](n T) T {
 	return <-resCh
 }
 
-//func GeneProcessor[T numbers](nums []T, workers int, repeats int) []T {
-//	tasks := make(chan T, workers)
-//	res := make(chan T, workers)
-//
-//	var wg sync.WaitGroup
-//	for i := 0; i <= workers; i++ {
-//		wg.Add(1)
-//		go func(taskChan chan T) {
-//			defer wg.Done()
-//			for {
-//				select {
-//				case t, ok := <-taskChan:
-//					if !ok {
-//						return
-//					}
-//
-//					res <- t * t
-//				}
-//			}
-//		}(tasks)
-//	}
-//
-//	result := make([]T, 0, len(nums))
-//	go func(resultsChan chan T) {
-//		for {
-//			select {
-//			case r := <-resultsChan:
-//				result = append(result, r)
-//			}
-//		}
-//	}(res)
-//
-//	for _, n := range nums {
-//		for i := 0; i < repeats; i++ {
-//			tasks <- n
-//		}
-//	}
-//	close(tasks)
-//
-//	wg.Wait()
-//	close(res)
-//
-//	return result
-//}
+func ProcWithG(num int) int {
+	resCh := make(chan int)
+
+	go gchanputin(num, resCh)
+
+	return <-resCh
+}
+
+func chanputinInt(n interface{}, ch chan interface{}) {
+	ch <- n
+}
+
+func ProcOnInt(some interface{}) int {
+	resCh := make(chan interface{})
+
+	go chanputinInt(some, resCh)
+	x := <-resCh
+	num, ok := x.(int)
+	if !ok {
+		return 0
+	}
+
+	return num
+}

@@ -3,8 +3,8 @@ package genechan
 import "sync"
 
 func Processor(nums []int, workers int, repeats int) []int {
-	tasks := make(chan int)
-	res := make(chan int)
+	tasks := make(chan int, 10)
+	res := make(chan int, 10)
 
 	var wg sync.WaitGroup
 	for i := 0; i <= workers; i++ {

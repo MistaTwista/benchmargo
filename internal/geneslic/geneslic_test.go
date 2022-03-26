@@ -14,7 +14,7 @@ func TestUniq(t *testing.T) {
 	}{
 		{
 			Name:   "simple",
-			List:   generateFakes(10),
+			List:   generateFakesStr(10),
 			Result: []string{"one", "two", "three", "four"},
 		},
 	}
@@ -33,7 +33,7 @@ func TestGeneuniq(t *testing.T) {
 	}{
 		{
 			Name:   "simple",
-			List:   generateFakes(10),
+			List:   generateFakesStr(10),
 			Result: []string{"one", "two", "three", "four"},
 		},
 	}
@@ -44,7 +44,7 @@ func TestGeneuniq(t *testing.T) {
 	}
 }
 
-func generateFakes(num int) []string {
+func generateFakesStr(num int) []string {
 	fromList := []string{"one", "two", "three", "four"}
 	result := make([]string, 0, num*len(fromList))
 	for _, s := range fromList {
@@ -54,7 +54,17 @@ func generateFakes(num int) []string {
 	return result
 }
 
-var resGlobal []string
+func generateFakesInt(num int) []int {
+	fromList := []int{1, 2, 3, 4}
+	result := make([]int, 0, num*len(fromList))
+	for _, s := range fromList {
+		result = append(result, s)
+	}
+
+	return result
+}
+
+var resGlobalStr []string
 
 func BenchmarkUniqString(b *testing.B) {
 	cases := []struct {
@@ -68,14 +78,14 @@ func BenchmarkUniqString(b *testing.B) {
 	}
 
 	for _, c := range cases {
-		list := generateFakes(c.Nums)
+		list := generateFakesStr(c.Nums)
 		var result []string
 		b.Run(c.Name, func(b *testing.B) {
 			for n := 0; n < b.N; n++ {
 				result = UniqStrings(list)
 			}
 		})
-		resGlobal = result
+		resGlobalStr = result
 	}
 }
 
@@ -91,13 +101,61 @@ func BenchmarkGeneUniq(b *testing.B) {
 	}
 
 	for _, c := range cases {
-		list := generateFakes(c.Nums)
+		list := generateFakesStr(c.Nums)
 		var result []string
 		b.Run(c.Name, func(b *testing.B) {
 			for n := 0; n < b.N; n++ {
 				result = GeneUniq(list)
 			}
 		})
-		resGlobal = result
+		resGlobalStr = result
+	}
+}
+
+var resGlobalInt []int
+
+func BenchmarkUniqInt(b *testing.B) {
+	cases := []struct {
+		Name string
+		Nums int
+	}{
+		{Name: "10", Nums: 10},
+		{Name: "100", Nums: 100},
+		{Name: "1000", Nums: 1000},
+		{Name: "10000", Nums: 10000},
+	}
+
+	for _, c := range cases {
+		list := generateFakesInt(c.Nums)
+		var result []int
+		b.Run(c.Name, func(b *testing.B) {
+			for n := 0; n < b.N; n++ {
+				result = UniqInts(list)
+			}
+		})
+		resGlobalInt = result
+	}
+}
+
+func BenchmarkGeneUniqInt(b *testing.B) {
+	cases := []struct {
+		Name string
+		Nums int
+	}{
+		{Name: "10", Nums: 10},
+		{Name: "100", Nums: 100},
+		{Name: "1000", Nums: 1000},
+		{Name: "10000", Nums: 10000},
+	}
+
+	for _, c := range cases {
+		list := generateFakesInt(c.Nums)
+		var result []int
+		b.Run(c.Name, func(b *testing.B) {
+			for n := 0; n < b.N; n++ {
+				result = GeneUniq(list)
+			}
+		})
+		resGlobalInt = result
 	}
 }

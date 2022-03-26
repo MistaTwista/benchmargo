@@ -24,6 +24,7 @@ func TestGeneAsync(t *testing.T) {
 var res []int
 
 func BenchmarkProcessor(b *testing.B) {
+	b.Skip()
 	cases := []struct {
 		Name    string
 		Nums    int
@@ -31,17 +32,6 @@ func BenchmarkProcessor(b *testing.B) {
 		Repeats int
 	}{
 		{Name: "10-2-1", Nums: 10, Workers: 2, Repeats: 1},
-		//{Name: "100-2-1", Nums: 100, Workers: 2, Repeats: 1},
-		{Name: "100-4-1", Nums: 100, Workers: 4, Repeats: 1},
-		//{Name: "100-8-1", Nums: 100, Workers: 8, Repeats: 1},
-		//{Name: "100-16-1", Nums: 100, Workers: 16, Repeats: 1},
-		{Name: "100-32-1", Nums: 100, Workers: 32, Repeats: 1},
-		//{Name: "1000-1-1", Nums: 1000, Workers: 1, Repeats: 1},
-		//{Name: "1000-2-1", Nums: 1000, Workers: 2, Repeats: 1},
-		//{Name: "1000-4-1", Nums: 1000, Workers: 4, Repeats: 1},
-		//{Name: "1000-8-1", Nums: 1000, Workers: 8, Repeats: 1},
-		//{Name: "1000-16-1", Nums: 1000, Workers: 16, Repeats: 1},
-		//{Name: "1000-32-1", Nums: 1000, Workers: 32, Repeats: 1},
 	}
 
 	for _, c := range cases {
@@ -58,6 +48,7 @@ func BenchmarkProcessor(b *testing.B) {
 }
 
 func BenchmarkGeneProcessor(b *testing.B) {
+	b.Skip()
 	cases := []struct {
 		Name    string
 		Nums    int
