@@ -1,6 +1,3 @@
-//go:build generics
-// +build generics
-
 package genechacha
 
 import (
@@ -8,7 +5,9 @@ import (
 	"testing"
 )
 
-func BenchmarkGenericsProcessor(b *testing.B) {
+var res []int
+
+func BenchmarkJustProcessor(b *testing.B) {
 	cases := []struct {
 		Name string
 		Nums int
@@ -22,11 +21,10 @@ func BenchmarkGenericsProcessor(b *testing.B) {
 
 	for _, c := range cases {
 		var r []int
-		nums := util.GgenerateRandoms[int](c.Nums)
-
-		b.Run(c.Name+" generics", func(b *testing.B) {
+		nums := util.GenerateRandoms(c.Nums)
+		b.Run(c.Name+" just", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				r = GeneProcessor(nums)
+				r = Processor(nums)
 			}
 			res = r
 		})

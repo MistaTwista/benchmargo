@@ -1,19 +1,28 @@
 # Build variables
 GO_BIN_PATH ?= go
 TAGS ?= generics
+BENCH ?= ^BenchmarkJust*
+CPU ?= 1,12
+COUNT ?= 2
+path ?= ./...
 
-#BINARY_NAME = jironimo
-#BUILD_DIR = build
-#VERSION ?= $(shell git tag --points-at HEAD | tail -n 1)
-#BUILD_DATE = $(shell date -u +"%Y-%m-%dT%H:%M:%S")
-#COMMIT_SHA = $(shell git rev-parse --short HEAD)
-#LDFLAGS = -ldflags "-w -X main.version=${VERSION} -X main.buildDate=${BUILD_DATE} -X main.commit=${COMMIT_SHA}"
-#USERNAME = $(shell git config user.name)
-#GOOS ?= linux
+.PHONY: version
+version: ## Shows go version for GO_BIN_PATH
+	${GO_BIN_PATH} version
 
-.PHONY: test
-test: ## Run unit tests
-	${GO_BIN_PATH} test -v ./... --tags=${TAGS}
+.PHONY: bench
+bench: version ## Run benchmarks
+	${GO_BIN_PATH} test -bench=. -count=${COUNT} -cpu=${CPU} --tags=${TAGS} -benchmem -v ./...
+
+.PHONY: benchone
+benchone: version ## Run benchmark in one package. Example: BENCH=^BenchmarkAwesomeToJSON.* make benchone path=./internal/genechacha
+	${GO_BIN_PATH} test -bench=${BENCH} -count=${COUNT} -cpu=${CPU} -benchmem -cpuprofile=cpu.out -memprofile=mem.out -v --tags=${TAGS} ${path}
+
+# use top10
+# list <function name>
+.PHONY: pprof
+pprof: version ## Profile
+	${GO_BIN_PATH} tool pprof genechacha.test cpu.out
 
 .DEFAULT_GOAL := help
 help: ## Show this message
