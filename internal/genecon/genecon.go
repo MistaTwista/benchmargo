@@ -1,18 +1,10 @@
+//go:build generics
+
 package genecon
 
-type Stringer interface {
-	String() string
-}
+import "github.com/MistaTwista/generigo/internal/util"
 
-func GStringify[T Stringer](s []T) (ret []string) {
-	for _, v := range s {
-		ret = append(ret, v.String())
-	}
-
-	return ret
-}
-
-func Stringify(s []Stringer) (ret []string) {
+func GStringify[T util.Stringer](s []T) (ret []string) {
 	for _, v := range s {
 		ret = append(ret, v.String())
 	}

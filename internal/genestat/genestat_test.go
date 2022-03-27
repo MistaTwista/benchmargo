@@ -1,18 +1,18 @@
+//go:build generics
+
 package genestat
 
 import "testing"
 
-var rG uint64
-var wG uint64
-
-func BenchmarkProcessor(b *testing.B) {
+func BenchmarkGeneProcessor(b *testing.B) {
 	cases := []struct {
-		Name    string
-		Nums    int
-		Workers int
-		Repeats int
+		Name   string
+		RCount int
+		WCount int
 	}{
-		{Name: "10-2-1", Nums: 10, Workers: 2, Repeats: 1},
+		{Name: "generics-100-10", RCount: 100, WCount: 10},
+		{Name: "generics-1000-100", RCount: 1000, WCount: 100},
+		{Name: "generics-10000-1000", RCount: 10000, WCount: 1000},
 	}
 
 	for _, c := range cases {
@@ -20,34 +20,7 @@ func BenchmarkProcessor(b *testing.B) {
 		var w uint64
 		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				//b.Log(i, b.N)
-				r, w = Processor()
-			}
-			rG = r
-			wG = w
-		})
-
-		b.Log(rG, wG)
-	}
-}
-
-func BenchmarkGProcessor(b *testing.B) {
-	cases := []struct {
-		Name    string
-		Nums    int
-		Workers int
-		Repeats int
-	}{
-		{Name: "10-2-1", Nums: 10, Workers: 2, Repeats: 1},
-	}
-
-	for _, c := range cases {
-		var r uint64
-		var w uint64
-		b.Run(c.Name, func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				//b.Log(i, b.N)
-				r, w = GProcessor[float64]()
+				r, w = GProcessor[int](c.RCount, c.WCount)
 			}
 			rG = r
 			wG = w

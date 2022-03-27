@@ -1,5 +1,3 @@
-//go:build generics
-
 package genemin
 
 import (
@@ -8,7 +6,9 @@ import (
 	"testing"
 )
 
-func TestGeneMin(t *testing.T) {
+var res int
+
+func TestJustMin(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Nums   []int
@@ -18,8 +18,8 @@ func TestGeneMin(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		t.Run(c.Name+" generics", func(t *testing.T) {
-			r := GFindMin(c.Nums)
+		t.Run(c.Name+" just", func(t *testing.T) {
+			r := FindMin(c.Nums)
 			if r != c.Result {
 				t.Fatal(fmt.Sprintf("want: %d, got: %d", c.Result, r))
 			}
@@ -27,7 +27,7 @@ func TestGeneMin(t *testing.T) {
 	}
 }
 
-func BenchmarkGeneMin(b *testing.B) {
+func BenchmarkJustMin(b *testing.B) {
 	cases := []struct {
 		Name string
 		Nums int
@@ -42,9 +42,9 @@ func BenchmarkGeneMin(b *testing.B) {
 	for _, c := range cases {
 		rnd := util.GgenerateRandoms(c.Nums)
 		var r int
-		b.Run(c.Name+" generics", func(b *testing.B) {
+		b.Run(c.Name+" just", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				r = GFindMin(rnd)
+				r = FindMin(rnd)
 			}
 
 			res = r

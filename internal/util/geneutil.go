@@ -1,5 +1,4 @@
 //go:build generics
-// +build generics
 
 package util
 
@@ -13,22 +12,26 @@ type Addeable interface {
 	~int | ~float64 | ~string
 }
 
-func AddeableToInterface[T Addeable](list ...T) []interface{} {
+type Checkable interface {
+	~int | ~string | ~float32 | ~float64
+}
+
+func Repeat[T any](times int, seed ...T) []T {
+	res := make([]T, 0, times)
+	for i := 0; i < times; i++ {
+		res = append(res, seed...)
+	}
+
+	return res
+}
+
+func ToInterface[T any](list ...T) []interface{} {
 	interfacedList := make([]interface{}, 0, len(list))
 	for _, itm := range list {
 		interfacedList = append(interfacedList, itm)
 	}
 
 	return interfacedList
-}
-
-func GenAddeable[T Addeable](num int, seed ...T) []T {
-	res := make([]T, 0, num)
-	for i := 0; i < num; i++ {
-		res = append(res, seed...)
-	}
-
-	return res
 }
 
 func Grnd[T Numbers](n T) func() T {

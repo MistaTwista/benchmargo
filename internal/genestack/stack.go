@@ -1,20 +1,18 @@
-//go:build generics
-
 package genestack
 
-type GStack[T any] struct {
-	values []T
+type Stack struct {
+	values []interface{}
 }
 
-func (s *GStack[T]) Push(value T) {
+func (s *Stack) Push(value interface{}) {
 	s.values = append(s.values, value)
 }
 
-func (s *GStack[T]) IsGotSome() bool {
+func (s *Stack) IsGotSome() bool {
 	return len(s.values) != 0
 }
 
-func (s *GStack[T]) Pop() T {
+func (s *Stack) Pop() interface{} {
 	x := s.values[len(s.values)-1]
 	s.values = s.values[:len(s.values)-1]
 	return x

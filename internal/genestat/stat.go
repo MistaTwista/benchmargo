@@ -1,5 +1,3 @@
-//go:build generics
-
 package genestat
 
 import (
@@ -8,25 +6,25 @@ import (
 	"time"
 )
 
-type greadOp[T util.Numbers] struct {
-	key  T
-	resp chan T
+type readOp struct {
+	key  int
+	resp chan int
 }
-type gwriteOp[T util.Numbers] struct {
-	key  T
-	val  T
+type writeOp struct {
+	key  int
+	val  int
 	resp chan bool
 }
 
-func GProcessor[T util.Numbers](readersCount, writersCount int) (uint64, uint64) {
+func Processor(readersCount, writersCount int) (uint64, uint64) {
 	var readOps uint64
 	var writeOps uint64
 
-	reads := make(chan greadOp[T])
-	writes := make(chan gwriteOp[T])
+	reads := make(chan readOp)
+	writes := make(chan writeOp)
 
 	go func() {
-		var state = make(map[T]T)
+		var state = make(map[int]int)
 		for {
 			select {
 			case read := <-reads:
@@ -38,14 +36,13 @@ func GProcessor[T util.Numbers](readersCount, writersCount int) (uint64, uint64)
 		}
 	}()
 
-	rand5 := util.Grnd[T](5)
-	rand100 := util.Grnd[T](100)
+	rand5 := util.Rnd(5)
 	for r := 0; r < readersCount; r++ {
 		go func() {
 			for {
-				read := greadOp[T]{
+				read := readOp{
 					key:  rand5(),
-					resp: make(chan T),
+					resp: make(chan int),
 				}
 
 				reads <- read
@@ -56,10 +53,11 @@ func GProcessor[T util.Numbers](readersCount, writersCount int) (uint64, uint64)
 		}()
 	}
 
+	rand100 := util.Rnd(100)
 	for w := 0; w < writersCount; w++ {
 		go func() {
 			for {
-				write := gwriteOp[T]{
+				write := writeOp{
 					key:  rand5(),
 					val:  rand100(),
 					resp: make(chan bool),

@@ -1,3 +1,5 @@
+//go:build generics
+
 package genevari
 
 import (
@@ -5,16 +7,33 @@ import (
 	"testing"
 )
 
-func TestProc(t *testing.T) {
-	x := Pipe(Identity(2), Multiply, MultiplyWith(10), Plus)
+func TestGenetProc(t *testing.T) {
+	x := GPipe(GIdentity(2), GMultiply[int], GMultiplyWith(10), GPlus[int])
 	if x != 80 {
 		t.Fail()
 	}
 }
 
-var res int
+func TestGeneGenerator(t *testing.T) {
+	mulBy2 := GeneMultiplicator(2)
+	resCh := GeneSummer(GeneDuplicator(mulBy2(GeneGenerator[int](10))))
+	var wg sync.WaitGroup
+	wg.Add(1)
+	var result int
+	go func() {
+		defer wg.Done()
+		for i := range resCh {
+			result = i
+		}
+	}()
 
-func BenchmarkProc(b *testing.B) {
+	wg.Wait()
+	if result != 180 {
+		t.Fail()
+	}
+}
+
+func BenchmarkGeneProc(b *testing.B) {
 	cases := []struct {
 		Name string
 		Nums int
@@ -32,38 +51,10 @@ func BenchmarkProc(b *testing.B) {
 
 			res = r
 		})
-
-		b.Run(c.Name+" just", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				x := Pipe(Identity(c.Nums), Multiply, MultiplyWith(c.Nums), Plus)
-				r = x
-			}
-
-			res = r
-		})
 	}
 }
 
-func TestGenerator(t *testing.T) {
-	mulBy2 := Multiplicator(2)
-	resCh := Summer(Duplicator(mulBy2(Generator(10))))
-	var wg sync.WaitGroup
-	wg.Add(1)
-	var result int
-	go func() {
-		defer wg.Done()
-		for i := range resCh {
-			result = i
-		}
-	}()
-
-	wg.Wait()
-	if result != 180 {
-		t.Fail()
-	}
-}
-
-func BenchmarkChanPipe(b *testing.B) {
+func BenchmarkGeneChanPipe(b *testing.B) {
 	cases := []struct {
 		Name string
 		Nums int
@@ -77,17 +68,6 @@ func BenchmarkChanPipe(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				mulBy2 := GeneMultiplicator(2)
 				resCh := GeneSummer(GeneDuplicator(mulBy2(GeneGenerator[int](c.Nums))))
-
-				r = <-resCh
-			}
-
-			res = r
-		})
-
-		b.Run("just", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				mulBy2 := Multiplicator(2)
-				resCh := Summer(Duplicator(mulBy2(Generator(c.Nums))))
 
 				r = <-resCh
 			}

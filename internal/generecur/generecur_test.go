@@ -1,3 +1,5 @@
+//go:build generics
+
 package generecur
 
 import (
@@ -5,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestNest(t *testing.T) {
+func TestGeneNest(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Nums   int
@@ -18,7 +20,7 @@ func TestNest(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.Name, func(t *testing.T) {
-			r := Nest(Box{c.Nums}, c.Nums)
+			r := GNest(GBox[int]{c.Nums}, c.Nums)
 			if r != c.Result {
 				t.Fatal(fmt.Sprintf("want: %d, got: %d", c.Result, r))
 			}
@@ -26,9 +28,7 @@ func TestNest(t *testing.T) {
 	}
 }
 
-var res int
-
-func BenchmarkNest(b *testing.B) {
+func BenchmarkGeneNest(b *testing.B) {
 	cases := []struct {
 		Name string
 		Nums int
@@ -42,13 +42,6 @@ func BenchmarkNest(b *testing.B) {
 
 	for _, c := range cases {
 		var r int
-		b.Run(c.Name+" just", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				r = Nest(Box{i}, c.Nums)
-			}
-			res = r
-		})
-
 		b.Run(c.Name+" generics", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				r = GNest(GBox[int]{i}, c.Nums)

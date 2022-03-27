@@ -1,5 +1,3 @@
-//go:build generics
-
 package geneslic
 
 import (
@@ -9,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGeneUniq(t *testing.T) {
+func TestJustUniq(t *testing.T) {
 	cases := []struct {
 		Name   string
 		List   []string
@@ -23,12 +21,14 @@ func TestGeneUniq(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		res := GeneUniq(c.List)
+		res := UniqStrings(c.List)
 		assert.Equal(t, c.Result, res)
 	}
 }
 
-func BenchmarkGeneUniq(b *testing.B) {
+var resGlobalStr []string
+
+func BenchmarkUniqString(b *testing.B) {
 	cases := []struct {
 		Name string
 		Nums int
@@ -44,14 +44,16 @@ func BenchmarkGeneUniq(b *testing.B) {
 		var result []string
 		b.Run(c.Name, func(b *testing.B) {
 			for n := 0; n < b.N; n++ {
-				result = GeneUniq(list)
+				result = UniqStrings(list)
 			}
 		})
 		resGlobalStr = result
 	}
 }
 
-func BenchmarkGeneUniqInt(b *testing.B) {
+var resGlobalInt []int
+
+func BenchmarkUniqInt(b *testing.B) {
 	cases := []struct {
 		Name string
 		Nums int
@@ -67,7 +69,7 @@ func BenchmarkGeneUniqInt(b *testing.B) {
 		var result []int
 		b.Run(c.Name, func(b *testing.B) {
 			for n := 0; n < b.N; n++ {
-				result = GeneUniq(list)
+				result = UniqInts(list)
 			}
 		})
 		resGlobalInt = result

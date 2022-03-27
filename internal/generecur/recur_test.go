@@ -1,25 +1,24 @@
-//go:build generics
-
-package genemin
+package generecur
 
 import (
 	"fmt"
-	"github.com/MistaTwista/generigo/internal/util"
 	"testing"
 )
 
-func TestGeneMin(t *testing.T) {
+func TestJustNest(t *testing.T) {
 	cases := []struct {
 		Name   string
-		Nums   []int
+		Nums   int
 		Result int
 	}{
-		{Name: "just", Nums: []int{9, 8, 7, 6, 5, 1, 4}, Result: 1},
+		{Name: "just 10", Nums: 10, Result: 20},
+		{Name: "just 100", Nums: 100, Result: 200},
+		{Name: "just 1000", Nums: 1000, Result: 2000},
 	}
 
 	for _, c := range cases {
-		t.Run(c.Name+" generics", func(t *testing.T) {
-			r := GFindMin(c.Nums)
+		t.Run(c.Name, func(t *testing.T) {
+			r := Nest(Box{c.Nums}, c.Nums)
 			if r != c.Result {
 				t.Fatal(fmt.Sprintf("want: %d, got: %d", c.Result, r))
 			}
@@ -27,7 +26,9 @@ func TestGeneMin(t *testing.T) {
 	}
 }
 
-func BenchmarkGeneMin(b *testing.B) {
+var res int
+
+func BenchmarkJustNest(b *testing.B) {
 	cases := []struct {
 		Name string
 		Nums int
@@ -40,13 +41,11 @@ func BenchmarkGeneMin(b *testing.B) {
 	}
 
 	for _, c := range cases {
-		rnd := util.GgenerateRandoms(c.Nums)
 		var r int
-		b.Run(c.Name+" generics", func(b *testing.B) {
+		b.Run(c.Name+" just", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				r = GFindMin(rnd)
+				r = Nest(Box{i}, c.Nums)
 			}
-
 			res = r
 		})
 	}

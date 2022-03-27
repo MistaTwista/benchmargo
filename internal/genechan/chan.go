@@ -1,20 +1,17 @@
-//go:build generics
-
 package genechan
 
 import (
-	"github.com/MistaTwista/generigo/internal/util"
 	"sync"
 )
 
-func GeneProcessor[T util.Numbers](nums []T, workers int, repeats int) []T {
-	tasks := make(chan T)
-	res := make(chan T)
+func Processor(nums []int, workers int, repeats int) []int {
+	tasks := make(chan int, 10)
+	res := make(chan int, 10)
 
 	var wg sync.WaitGroup
 	for i := 0; i <= workers; i++ {
 		wg.Add(1)
-		go func(taskChan chan T) {
+		go func(taskChan chan int) {
 			defer wg.Done()
 			for {
 				select {
@@ -29,8 +26,8 @@ func GeneProcessor[T util.Numbers](nums []T, workers int, repeats int) []T {
 		}(tasks)
 	}
 
-	result := make([]T, 0, len(nums))
-	go func(resultsChan chan T) {
+	result := make([]int, 0, len(nums))
+	go func(resultsChan chan int) {
 		for {
 			select {
 			case r := <-resultsChan:

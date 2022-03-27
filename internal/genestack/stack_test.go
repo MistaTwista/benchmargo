@@ -1,5 +1,3 @@
-//go:build generics
-
 package genestack
 
 import (
@@ -8,13 +6,13 @@ import (
 	"testing"
 )
 
-func TestGeneStack(t *testing.T) {
-	s := GStack[any]{}
+func TestJustStack(t *testing.T) {
+	s := Stack{}
 	s.Push(42)
 	s.Push(43)
 	s.Push("some")
 	s.Push([]string{"one", "two"})
-	for _, item := range []any{[]string{"one", "two"}, "some", 43, 42} {
+	for _, item := range []interface{}{[]string{"one", "two"}, "some", 43, 42} {
 		if ok := s.IsGotSome(); !ok {
 			t.Fatal(fmt.Sprintf("nothing left, but you asked %v", item))
 		}
@@ -28,9 +26,9 @@ func TestGeneStack(t *testing.T) {
 	}
 }
 
-var data any
+var dataInterface interface{}
 
-func BenchmarkGeneStack(b *testing.B) {
+func BenchmarkJustStack(b *testing.B) {
 	cases := []struct {
 		Name string
 		Nums int
@@ -42,11 +40,11 @@ func BenchmarkGeneStack(b *testing.B) {
 	}
 
 	for _, c := range cases {
-		list := util.Repeat(c.Nums, []int{1, 2, 3, 4, 5}...)
-		var result any
+		list := util.RepeatInts(c.Nums, []int{1, 2, 3, 4, 5}...)
+		var result interface{}
 		b.Run(c.Name, func(b *testing.B) {
 			for n := 0; n < b.N; n++ {
-				s := GStack[any]{}
+				s := Stack{}
 				for _, x := range list {
 					s.Push(x)
 				}
@@ -56,6 +54,6 @@ func BenchmarkGeneStack(b *testing.B) {
 				}
 			}
 		})
-		data = result
+		dataInterface = result
 	}
 }

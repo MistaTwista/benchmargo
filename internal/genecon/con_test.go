@@ -1,13 +1,12 @@
-//go:build generics
-
 package genecon
 
 import (
-	"github.com/MistaTwista/generigo/internal/util"
 	"testing"
+
+	"github.com/MistaTwista/generigo/internal/util"
 )
 
-func BenchmarkGeneStringify(b *testing.B) {
+func BenchmarkJustStringify(b *testing.B) {
 	cases := []struct {
 		Name  string
 		Items []Str
@@ -18,16 +17,22 @@ func BenchmarkGeneStringify(b *testing.B) {
 
 	for _, c := range cases {
 		var r []string
-		b.Run(c.Name+" generics", func(b *testing.B) {
+
+		list := make([]util.Stringer, 0, len(c.Items))
+		for _, itm := range c.Items {
+			list = append(list, itm)
+		}
+
+		b.Run(c.Name+" just", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				r = GStringify(c.Items)
+				r = Stringify(list)
 			}
 			res = r
 		})
 	}
 }
 
-func BenchmarkGeneStringifyInterface(b *testing.B) {
+func BenchmarkJustStringifyInterface(b *testing.B) {
 	cases := []struct {
 		Name  string
 		Items []util.Stringer
@@ -38,9 +43,9 @@ func BenchmarkGeneStringifyInterface(b *testing.B) {
 
 	for _, c := range cases {
 		var r []string
-		b.Run(c.Name+" generics", func(b *testing.B) {
+		b.Run(c.Name+" just", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				r = GStringify(c.Items)
+				r = Stringify(c.Items)
 			}
 			res = r
 		})

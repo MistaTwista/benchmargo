@@ -1,3 +1,5 @@
+//go:build generics
+
 package geneplus
 
 import (
@@ -7,7 +9,7 @@ import (
 	"github.com/MistaTwista/generigo/internal/util"
 )
 
-func Test_AddInt(t *testing.T) {
+func TestGeneAddInt(t *testing.T) {
 	cases := []struct {
 		Name   string
 		A      int
@@ -18,78 +20,16 @@ func Test_AddInt(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		t.Run(c.Name+"interface", func(t *testing.T) {
-			res, _ := addWithInterface(c.A, c.B)
-			result, _ := res.(int)
-			if c.Result != result {
-				t.Fatal("!=")
-			}
-		})
-		t.Run(c.Name+"reflect", func(t *testing.T) {
-			res, _ := addReflected(c.A, c.B)
-			result, _ := res.(int)
-			if c.Result != result {
-				t.Fatal("!=")
-			}
-		})
-		t.Run(c.Name+"just", func(t *testing.T) {
-			res := addInt(c.A, c.B)
-			if c.Result != res {
-				t.Fatal("!=")
-			}
-		})
 		t.Run(c.Name+"generics", func(t *testing.T) {
 			res := addGenerics(c.A, c.B)
 			if c.Result != res {
 				t.Fatal("!=")
 			}
 		})
-		t.Run(c.Name+"constrained generic", func(t *testing.T) {
-			res := addGenericsConstrained(c.A, c.B)
-			if c.Result != res {
-				t.Fatal("!=")
-			}
-		})
 	}
 }
 
-func Test_AddIntVariadic(t *testing.T) {
-	cases := []struct {
-		Name   string
-		List   []interface{}
-		Result interface{}
-	}{
-		{Name: "ints", List: []interface{}{1, 2, 3, 4, 5}, Result: 15},
-		{Name: "strings", List: []interface{}{"hello", "world", "whats", "up"}, Result: "helloworldwhatsup"},
-		{Name: "floats", List: []interface{}{1.1, 1.2, 1.3, 1.4}, Result: 5.0},
-	}
-
-	for _, c := range cases {
-		t.Run(c.Name+" interface", func(t *testing.T) {
-			res, err := addWithInterfaceVari(c.List...)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			if c.Result != res {
-				t.Fatal(fmt.Sprintf("want: %v, got: %v", c.Result, res))
-			}
-		})
-
-		t.Run(c.Name+" reflect", func(t *testing.T) {
-			res, err := addReflectedVari(c.List...)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			if c.Result != res {
-				t.Fatal(fmt.Sprintf("want: %v, got: %v", c.Result, res))
-			}
-		})
-	}
-}
-
-func Test_AddIntsVariadic(t *testing.T) {
+func TestGeneAddIntsVariadic(t *testing.T) {
 	cases := []struct {
 		Name   string
 		List   []int
@@ -99,22 +39,8 @@ func Test_AddIntsVariadic(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		t.Run(c.Name+" int", func(t *testing.T) {
-			res := addIntVari(c.List...)
-			if c.Result != res {
-				t.Fatal(fmt.Sprintf("want: %v, got: %v", c.Result, res))
-			}
-		})
-
 		t.Run(c.Name+" generic", func(t *testing.T) {
 			res := addGenericsVari(c.List...)
-			if c.Result != res {
-				t.Fatal(fmt.Sprintf("want: %v, got: %v", c.Result, res))
-			}
-		})
-
-		t.Run(c.Name+" constrained generic", func(t *testing.T) {
-			res := addGenericsConstrainedVari(c.List...)
 			if c.Result != res {
 				t.Fatal(fmt.Sprintf("want: %v, got: %v", c.Result, res))
 			}
@@ -122,7 +48,7 @@ func Test_AddIntsVariadic(t *testing.T) {
 	}
 }
 
-func Test_AddFloats64Variadic(t *testing.T) {
+func TestGeneAddFloats64Variadic(t *testing.T) {
 	cases := []struct {
 		Name   string
 		List   []float64
@@ -132,22 +58,8 @@ func Test_AddFloats64Variadic(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		t.Run(c.Name+" just", func(t *testing.T) {
-			res := addFloat64Vari(c.List...)
-			if c.Result != res {
-				t.Fatal(fmt.Sprintf("want: %v, got: %v", c.Result, res))
-			}
-		})
-
 		t.Run(c.Name+" generic", func(t *testing.T) {
 			res := addGenericsVari(c.List...)
-			if c.Result != res {
-				t.Fatal(fmt.Sprintf("want: %v, got: %v", c.Result, res))
-			}
-		})
-
-		t.Run(c.Name+" constrained generic", func(t *testing.T) {
-			res := addGenericsConstrainedVari(c.List...)
 			if c.Result != res {
 				t.Fatal(fmt.Sprintf("want: %v, got: %v", c.Result, res))
 			}
@@ -155,7 +67,7 @@ func Test_AddFloats64Variadic(t *testing.T) {
 	}
 }
 
-func Test_AddStringVariadic(t *testing.T) {
+func TestGeneAddStringVariadic(t *testing.T) {
 	cases := []struct {
 		Name   string
 		List   []string
@@ -165,29 +77,8 @@ func Test_AddStringVariadic(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		t.Run(c.Name+" just", func(t *testing.T) {
-			res := addStringVari(c.List...)
-			if c.Result != res {
-				t.Fatal(fmt.Sprintf("want: %v, got: %v", c.Result, res))
-			}
-		})
-
-		t.Run(c.Name+" just buffered", func(t *testing.T) {
-			res := addStringBufVari(c.List...)
-			if c.Result != res {
-				t.Fatal(fmt.Sprintf("want: %v, got: %v", c.Result, res))
-			}
-		})
-
 		t.Run(c.Name+" generic", func(t *testing.T) {
 			res := addGenericsVari(c.List...)
-			if c.Result != res {
-				t.Fatal(fmt.Sprintf("want: %v, got: %v", c.Result, res))
-			}
-		})
-
-		t.Run(c.Name+" constrained generic", func(t *testing.T) {
-			res := addGenericsConstrainedVari(c.List...)
 			if c.Result != res {
 				t.Fatal(fmt.Sprintf("want: %v, got: %v", c.Result, res))
 			}
@@ -195,9 +86,7 @@ func Test_AddStringVariadic(t *testing.T) {
 	}
 }
 
-var resultInt int
-
-func BenchmarkAddInt(b *testing.B) {
+func BenchmarkGeneAddInt(b *testing.B) {
 	cases := []struct {
 		Name   string
 		A      int
@@ -209,27 +98,6 @@ func BenchmarkAddInt(b *testing.B) {
 
 	for _, c := range cases {
 		var r int
-		b.Run(c.Name+" interface", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res, _ := addWithInterface(c.A, c.B)
-				r = res.(int)
-			}
-			resultInt = r
-		})
-		b.Run(c.Name+" reflect", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res, _ := addReflected(c.A, c.B)
-				r = res.(int)
-			}
-			resultInt = r
-		})
-		b.Run(c.Name+" just", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res := addInt(c.A, c.B)
-				r = res
-			}
-			resultInt = r
-		})
 		b.Run(c.Name+" generics", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res := addGenerics(c.A, c.B)
@@ -237,19 +105,10 @@ func BenchmarkAddInt(b *testing.B) {
 			}
 			resultInt = r
 		})
-		b.Run(c.Name+" constrained generics", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res := addGenericsConstrained(c.A, c.B)
-				r = res
-			}
-			resultInt = r
-		})
 	}
 }
 
-var resultFloat float64
-
-func BenchmarkAddFloat64(b *testing.B) {
+func BenchmarkGeneAddFloat64(b *testing.B) {
 	cases := []struct {
 		Name   string
 		A      float64
@@ -261,27 +120,6 @@ func BenchmarkAddFloat64(b *testing.B) {
 
 	for _, c := range cases {
 		var r float64
-		b.Run(c.Name+" interface", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res, _ := addWithInterface(c.A, c.B)
-				r = res.(float64)
-			}
-			resultFloat = r
-		})
-		b.Run(c.Name+" reflect", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res, _ := addReflected(c.A, c.B)
-				r = res.(float64)
-			}
-			resultFloat = r
-		})
-		b.Run(c.Name+" just", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res := addFloat64(c.A, c.B)
-				r = res
-			}
-			resultFloat = r
-		})
 		b.Run(c.Name+" generics", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res := addGenerics(c.A, c.B)
@@ -289,19 +127,10 @@ func BenchmarkAddFloat64(b *testing.B) {
 			}
 			resultFloat = r
 		})
-		b.Run(c.Name+" constrained generics", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res := addGenericsConstrained(c.A, c.B)
-				r = res
-			}
-			resultFloat = r
-		})
 	}
 }
 
-var resultString string
-
-func BenchmarkAddString(b *testing.B) {
+func BenchmarkGeneAddString(b *testing.B) {
 	cases := []struct {
 		Name   string
 		A      string
@@ -313,34 +142,6 @@ func BenchmarkAddString(b *testing.B) {
 
 	for _, c := range cases {
 		var r string
-		b.Run(c.Name+" interface", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res, _ := addWithInterface(c.A, c.B)
-				r = res.(string)
-			}
-			resultString = r
-		})
-		b.Run(c.Name+" reflect", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res, _ := addReflected(c.A, c.B)
-				r = res.(string)
-			}
-			resultString = r
-		})
-		b.Run(c.Name+" just", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res := addString(c.A, c.B)
-				r = res
-			}
-			resultString = r
-		})
-		b.Run(c.Name+" buf", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res := addStringBuf(c.A, c.B)
-				r = res
-			}
-			resultString = r
-		})
 		b.Run(c.Name+" generics", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res := addGenerics(c.A, c.B)
@@ -348,54 +149,19 @@ func BenchmarkAddString(b *testing.B) {
 			}
 			resultString = r
 		})
-		b.Run(c.Name+" constrained generics", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res := addGenericsConstrainedVari(c.A, c.B)
-				r = res
-			}
-			resultString = r
-		})
 	}
 }
 
-func BenchmarkAddIntVari(b *testing.B) {
+func BenchmarkGeneAddIntVari(b *testing.B) {
 	cases := []struct {
 		Name string
 		List []int
 	}{
-		{Name: "ints", List: util.GenAddeable(10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)},
+		{Name: "ints", List: util.Repeat(10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)},
 	}
 
 	for _, c := range cases {
 		var r int
-		interfacedList := util.AddeableToInterface[int](c.List...)
-
-		b.Run(c.Name+" interface", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res, _ := addWithInterfaceVari(interfacedList...)
-				r = res.(int)
-			}
-
-			resultInt = r
-		})
-
-		b.Run(c.Name+" reflected", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res, _ := addReflectedVari(interfacedList...)
-				r = res.(int)
-			}
-
-			resultInt = r
-		})
-
-		b.Run(c.Name+" int", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res := addIntVari(c.List...)
-				r = res
-			}
-			resultInt = r
-		})
-
 		b.Run(c.Name+" generics", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res := addGenericsVari(c.List...)
@@ -403,66 +169,22 @@ func BenchmarkAddIntVari(b *testing.B) {
 			}
 			resultInt = r
 		})
-
-		b.Run(c.Name+" constrained generics", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res := addGenericsConstrainedVari(c.List...)
-				r = res
-			}
-			resultInt = r
-		})
 	}
 }
 
-func BenchmarkAddFloatVari(b *testing.B) {
+func BenchmarkGeneAddFloatVari(b *testing.B) {
 	cases := []struct {
 		Name string
 		List []float64
 	}{
-		{Name: "floats", List: util.GenAddeable[float64](10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)},
+		{Name: "floats", List: util.Repeat[float64](10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)},
 	}
 
 	for _, c := range cases {
 		var r float64
-		interfacedList := util.AddeableToInterface[float64](c.List...)
-
-		b.Run(c.Name+" interface", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res, _ := addWithInterfaceVari(interfacedList...)
-				r = res.(float64)
-			}
-
-			resultFloat = r
-		})
-
-		b.Run(c.Name+" reflected", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res, _ := addReflectedVari(interfacedList...)
-				r = res.(float64)
-			}
-
-			resultFloat = r
-		})
-
-		b.Run(c.Name+" floats", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res := addFloat64Vari(c.List...)
-				r = res
-			}
-			resultFloat = r
-		})
-
 		b.Run(c.Name+" generics", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res := addGenericsVari(c.List...)
-				r = res
-			}
-			resultFloat = r
-		})
-
-		b.Run(c.Name+" constrained generics", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res := addGenericsConstrainedVari(c.List...)
 				r = res
 			}
 			resultFloat = r
@@ -470,63 +192,19 @@ func BenchmarkAddFloatVari(b *testing.B) {
 	}
 }
 
-func BenchmarkAddStringsVari(b *testing.B) {
+func BenchmarkGeneAddStringsVari(b *testing.B) {
 	cases := []struct {
 		Name string
 		List []string
 	}{
-		{Name: "strings", List: util.GenAddeable[string](10, "one", "two", "three", "four", "five")},
+		{Name: "strings", List: util.Repeat[string](10, "one", "two", "three", "four", "five")},
 	}
 
 	for _, c := range cases {
 		var r string
-		interfacedList := util.AddeableToInterface[string](c.List...)
-
-		b.Run(c.Name+" interface", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res, _ := addWithInterfaceVari(interfacedList...)
-				r = res.(string)
-			}
-
-			resultString = r
-		})
-
-		b.Run(c.Name+" reflected", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res, _ := addReflectedVari(interfacedList...)
-				r = res.(string)
-			}
-
-			resultString = r
-		})
-
-		b.Run(c.Name+" string", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res := addStringVari(c.List...)
-				r = res
-			}
-			resultString = r
-		})
-
-		b.Run(c.Name+" string buffered", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res := addStringBufVari(c.List...)
-				r = res
-			}
-			resultString = r
-		})
-
 		b.Run(c.Name+" generics", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res := addGenericsVari(c.List...)
-				r = res
-			}
-			resultString = r
-		})
-
-		b.Run(c.Name+" constrained generics", func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				res := addGenericsConstrainedVari(c.List...)
 				r = res
 			}
 			resultString = r

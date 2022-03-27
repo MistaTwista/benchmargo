@@ -1,5 +1,3 @@
-//go:build generics
-
 package genechan
 
 import (
@@ -7,14 +5,12 @@ import (
 	"testing"
 )
 
-func TestGeneProcessor(t *testing.T) {
-	x := GeneProcessor(util.GgenerateRandoms[int](10), 10, 10)
-	t.Log(x, len(x))
+func TestJustProcessor(t *testing.T) {
+	x := Processor([]int{1, 2, 3}, 10, 10)
+	t.Log(x)
 }
 
-var res []int
-
-func BenchmarkGeneProcessor(b *testing.B) {
+func BenchmarkJustProcessor(b *testing.B) {
 	b.Skip()
 	cases := []struct {
 		Name    string
@@ -27,11 +23,10 @@ func BenchmarkGeneProcessor(b *testing.B) {
 
 	for _, c := range cases {
 		var r []int
-		nums := util.GgenerateRandoms(c.Nums)
-
-		b.Run(c.Name+" generics", func(b *testing.B) {
+		nums := util.GenerateRandoms(c.Nums)
+		b.Run(c.Name+" just", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				r = GeneProcessor(nums, c.Workers, c.Repeats)
+				r = Processor(nums, c.Workers, c.Repeats)
 			}
 			res = r
 		})

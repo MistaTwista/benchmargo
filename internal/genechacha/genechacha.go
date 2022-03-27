@@ -1,5 +1,4 @@
 //go:build generics
-// +build generics
 
 package genechacha
 
