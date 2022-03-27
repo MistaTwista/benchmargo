@@ -1,7 +1,7 @@
 package genestat
 
 import (
-	"github.com/MistaTwista/generigo/internal/util"
+	"github.com/MistaTwista/benchmargo/internal/util"
 	"sync/atomic"
 	"time"
 )

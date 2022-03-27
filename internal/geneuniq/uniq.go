@@ -1,4 +1,4 @@
-package geneslic
+package geneuniq
 
 func UniqInts(list []int) []int {
 	uniq := make([]int, 0, len(list))

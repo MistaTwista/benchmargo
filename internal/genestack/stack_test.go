@@ -2,23 +2,24 @@ package genestack
 
 import (
 	"fmt"
-	"github.com/MistaTwista/generigo/internal/util"
+	"github.com/MistaTwista/benchmargo/internal/util"
 	"testing"
 )
 
-func TestJustStack(t *testing.T) {
+func TestStackJ(t *testing.T) {
 	s := Stack{}
 	s.Push(42)
 	s.Push(43)
 	s.Push("some")
 	s.Push([]string{"one", "two"})
 	for _, item := range []interface{}{[]string{"one", "two"}, "some", 43, 42} {
-		if ok := s.IsGotSome(); !ok {
+		cur, ok := s.Pop()
+		if !ok {
 			t.Fatal(fmt.Sprintf("nothing left, but you asked %v", item))
 		}
 
 		want := fmt.Sprintf("%v", item)
-		got := fmt.Sprintf("%v", s.Pop())
+		got := fmt.Sprintf("%v", cur)
 
 		if want != got {
 			t.Fatal(fmt.Sprintf("want: %s, got: %s", want, got))
@@ -28,7 +29,7 @@ func TestJustStack(t *testing.T) {
 
 var dataInterface interface{}
 
-func BenchmarkJustStack(b *testing.B) {
+func BenchmarkStackJ(b *testing.B) {
 	cases := []struct {
 		Name string
 		Nums int
@@ -49,8 +50,12 @@ func BenchmarkJustStack(b *testing.B) {
 					s.Push(x)
 				}
 
-				for s.IsGotSome() {
-					result = s.Pop()
+				for {
+					cur, ok := s.Pop()
+					if !ok {
+						break
+					}
+					result = cur
 				}
 			}
 		})

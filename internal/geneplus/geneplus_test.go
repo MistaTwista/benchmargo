@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/MistaTwista/generigo/internal/util"
+	"github.com/MistaTwista/benchmargo/internal/util"
 )
 
-func TestGeneAddInt(t *testing.T) {
+func TestGeneAddTwoIntPlus(t *testing.T) {
 	cases := []struct {
 		Name   string
 		A      int
@@ -29,7 +29,7 @@ func TestGeneAddInt(t *testing.T) {
 	}
 }
 
-func TestGeneAddIntsVariadic(t *testing.T) {
+func TestGeneAddIntsVariadicPlus(t *testing.T) {
 	cases := []struct {
 		Name   string
 		List   []int
@@ -40,7 +40,7 @@ func TestGeneAddIntsVariadic(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.Name+" generic", func(t *testing.T) {
-			res := addGenericsVari(c.List...)
+			res := AddGenericsVari(c.List...)
 			if c.Result != res {
 				t.Fatal(fmt.Sprintf("want: %v, got: %v", c.Result, res))
 			}
@@ -48,7 +48,7 @@ func TestGeneAddIntsVariadic(t *testing.T) {
 	}
 }
 
-func TestGeneAddFloats64Variadic(t *testing.T) {
+func TestGeneAddFloats64VariadicPlus(t *testing.T) {
 	cases := []struct {
 		Name   string
 		List   []float64
@@ -59,7 +59,7 @@ func TestGeneAddFloats64Variadic(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.Name+" generic", func(t *testing.T) {
-			res := addGenericsVari(c.List...)
+			res := AddGenericsVari(c.List...)
 			if c.Result != res {
 				t.Fatal(fmt.Sprintf("want: %v, got: %v", c.Result, res))
 			}
@@ -67,7 +67,7 @@ func TestGeneAddFloats64Variadic(t *testing.T) {
 	}
 }
 
-func TestGeneAddStringVariadic(t *testing.T) {
+func TestGeneAddStringVariadicPlus(t *testing.T) {
 	cases := []struct {
 		Name   string
 		List   []string
@@ -78,7 +78,7 @@ func TestGeneAddStringVariadic(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.Name+" generic", func(t *testing.T) {
-			res := addGenericsVari(c.List...)
+			res := AddGenericsVari(c.List...)
 			if c.Result != res {
 				t.Fatal(fmt.Sprintf("want: %v, got: %v", c.Result, res))
 			}
@@ -86,7 +86,7 @@ func TestGeneAddStringVariadic(t *testing.T) {
 	}
 }
 
-func BenchmarkGeneAddInt(b *testing.B) {
+func BenchmarkAddTwoIntG(b *testing.B) {
 	cases := []struct {
 		Name   string
 		A      int
@@ -98,7 +98,7 @@ func BenchmarkGeneAddInt(b *testing.B) {
 
 	for _, c := range cases {
 		var r int
-		b.Run(c.Name+" generics", func(b *testing.B) {
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res := addGenerics(c.A, c.B)
 				r = res
@@ -108,7 +108,7 @@ func BenchmarkGeneAddInt(b *testing.B) {
 	}
 }
 
-func BenchmarkGeneAddFloat64(b *testing.B) {
+func BenchmarkAddTwoFloat64G(b *testing.B) {
 	cases := []struct {
 		Name   string
 		A      float64
@@ -120,7 +120,7 @@ func BenchmarkGeneAddFloat64(b *testing.B) {
 
 	for _, c := range cases {
 		var r float64
-		b.Run(c.Name+" generics", func(b *testing.B) {
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res := addGenerics(c.A, c.B)
 				r = res
@@ -130,7 +130,7 @@ func BenchmarkGeneAddFloat64(b *testing.B) {
 	}
 }
 
-func BenchmarkGeneAddString(b *testing.B) {
+func BenchmarkAddTwoStringG(b *testing.B) {
 	cases := []struct {
 		Name   string
 		A      string
@@ -142,7 +142,7 @@ func BenchmarkGeneAddString(b *testing.B) {
 
 	for _, c := range cases {
 		var r string
-		b.Run(c.Name+" generics", func(b *testing.B) {
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res := addGenerics(c.A, c.B)
 				r = res
@@ -152,7 +152,7 @@ func BenchmarkGeneAddString(b *testing.B) {
 	}
 }
 
-func BenchmarkGeneAddIntVari(b *testing.B) {
+func BenchmarkAddIntsG(b *testing.B) {
 	cases := []struct {
 		Name string
 		List []int
@@ -162,9 +162,9 @@ func BenchmarkGeneAddIntVari(b *testing.B) {
 
 	for _, c := range cases {
 		var r int
-		b.Run(c.Name+" generics", func(b *testing.B) {
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				res := addGenericsVari(c.List...)
+				res := AddGenericsVari(c.List...)
 				r = res
 			}
 			resultInt = r
@@ -172,7 +172,7 @@ func BenchmarkGeneAddIntVari(b *testing.B) {
 	}
 }
 
-func BenchmarkGeneAddFloatVari(b *testing.B) {
+func BenchmarkAddFloatsG(b *testing.B) {
 	cases := []struct {
 		Name string
 		List []float64
@@ -182,9 +182,9 @@ func BenchmarkGeneAddFloatVari(b *testing.B) {
 
 	for _, c := range cases {
 		var r float64
-		b.Run(c.Name+" generics", func(b *testing.B) {
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				res := addGenericsVari(c.List...)
+				res := AddGenericsVari(c.List...)
 				r = res
 			}
 			resultFloat = r
@@ -192,7 +192,7 @@ func BenchmarkGeneAddFloatVari(b *testing.B) {
 	}
 }
 
-func BenchmarkGeneAddStringsVari(b *testing.B) {
+func BenchmarkAddStringsG(b *testing.B) {
 	cases := []struct {
 		Name string
 		List []string
@@ -202,9 +202,9 @@ func BenchmarkGeneAddStringsVari(b *testing.B) {
 
 	for _, c := range cases {
 		var r string
-		b.Run(c.Name+" generics", func(b *testing.B) {
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				res := addGenericsVari(c.List...)
+				res := AddGenericsVari(c.List...)
 				r = res
 			}
 			resultString = r

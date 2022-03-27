@@ -3,19 +3,23 @@
 package genechan
 
 import (
-	"github.com/MistaTwista/generigo/internal/util"
+	"github.com/MistaTwista/benchmargo/internal/util"
 	"testing"
 )
 
-func TestGeneProcessor(t *testing.T) {
-	x := GeneProcessor(util.GgenerateRandoms[int](10), 10, 10)
-	t.Log(x, len(x))
+func TestChanG(t *testing.T) {
+	list := GeneProcessor([]int{1, 2, 3}, 10, 1)
+	var sum int
+	for _, x := range list {
+		sum += x
+	}
+	res := 14
+	if sum != res {
+		t.Fatalf("%d != %d", sum, res)
+	}
 }
 
-var res []int
-
-func BenchmarkGeneProcessor(b *testing.B) {
-	b.Skip()
+func BenchmarkChanG(b *testing.B) {
 	cases := []struct {
 		Name    string
 		Nums    int
@@ -27,9 +31,8 @@ func BenchmarkGeneProcessor(b *testing.B) {
 
 	for _, c := range cases {
 		var r []int
-		nums := util.GgenerateRandoms(c.Nums)
-
-		b.Run(c.Name+" generics", func(b *testing.B) {
+		nums := util.GenerateRandoms(c.Nums)
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				r = GeneProcessor(nums, c.Workers, c.Repeats)
 			}

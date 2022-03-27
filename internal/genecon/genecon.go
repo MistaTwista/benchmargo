@@ -2,9 +2,9 @@
 
 package genecon
 
-import "github.com/MistaTwista/generigo/internal/util"
+import "github.com/MistaTwista/benchmargo/internal/util"
 
-func GStringify[T util.Stringer](s []T) (ret []string) {
+func GStringify[T util.Stringer](s ...T) (ret []string) {
 	for _, v := range s {
 		ret = append(ret, v.String())
 	}

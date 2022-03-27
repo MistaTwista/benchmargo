@@ -1,7 +1,7 @@
 package genecon
 
 import (
-	"github.com/MistaTwista/generigo/internal/util"
+	"github.com/MistaTwista/benchmargo/internal/util"
 	"strconv"
 )
 
@@ -32,8 +32,8 @@ func NewStringer(list []Str) []util.Stringer {
 	return res
 }
 
-func Stringify(s []util.Stringer) (ret []string) {
-	for _, v := range s {
+func Stringify(list ...util.Stringer) (ret []string) {
+	for _, v := range list {
 		ret = append(ret, v.String())
 	}
 

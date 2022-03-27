@@ -2,13 +2,13 @@ package genemin
 
 import (
 	"fmt"
-	"github.com/MistaTwista/generigo/internal/util"
+	"github.com/MistaTwista/benchmargo/internal/util"
 	"testing"
 )
 
 var res int
 
-func TestJustMin(t *testing.T) {
+func TestMinJ(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Nums   []int
@@ -18,7 +18,7 @@ func TestJustMin(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		t.Run(c.Name+" just", func(t *testing.T) {
+		t.Run(c.Name+"-just", func(t *testing.T) {
 			r := FindMin(c.Nums)
 			if r != c.Result {
 				t.Fatal(fmt.Sprintf("want: %d, got: %d", c.Result, r))
@@ -27,7 +27,7 @@ func TestJustMin(t *testing.T) {
 	}
 }
 
-func BenchmarkJustMin(b *testing.B) {
+func BenchmarkMinJ(b *testing.B) {
 	cases := []struct {
 		Name string
 		Nums int
@@ -40,11 +40,19 @@ func BenchmarkJustMin(b *testing.B) {
 	}
 
 	for _, c := range cases {
-		rnd := util.GgenerateRandoms(c.Nums)
+		rnd := util.GenerateRandoms(c.Nums)
 		var r int
-		b.Run(c.Name+" just", func(b *testing.B) {
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				r = FindMin(rnd)
+			}
+
+			res = r
+		})
+
+		b.Run(c.Name+" embed", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				r = FindMinEmbed(rnd)
 			}
 
 			res = r

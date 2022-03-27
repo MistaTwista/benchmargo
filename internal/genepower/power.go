@@ -1,6 +1,6 @@
-package genechacha
+package genepower
 
-func Processor(nums []int) []int {
+func Power(nums []int) []int {
 	tasks := make(chan int, len(nums))
 	res := make(chan int, len(nums))
 	result := make([]int, 0, len(nums))

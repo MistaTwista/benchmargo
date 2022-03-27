@@ -3,14 +3,14 @@
 package geneplus
 
 import (
-	"github.com/MistaTwista/generigo/internal/util"
+	"github.com/MistaTwista/benchmargo/internal/util"
 )
 
-func addGenerics[T util.Addeable](a, b T) T {
+func addGenerics[T util.Addable](a, b T) T {
 	return a + b
 }
 
-func addGenericsVari[T util.Addeable](list ...T) T {
+func AddGenericsVari[T util.Addable](list ...T) T {
 	var res T
 	for _, itm := range list {
 		res += itm

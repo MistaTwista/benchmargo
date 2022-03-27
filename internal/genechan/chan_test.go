@@ -1,17 +1,27 @@
 package genechan
 
 import (
-	"github.com/MistaTwista/generigo/internal/util"
+	"github.com/MistaTwista/benchmargo/internal/util"
 	"testing"
 )
 
-func TestJustProcessor(t *testing.T) {
-	x := Processor([]int{1, 2, 3}, 10, 10)
-	t.Log(x)
+func TestChanJ(t *testing.T) {
+	//t.Skip()
+	list := Processor([]int{1, 2, 3}, 10, 1)
+	var sum int
+	for _, x := range list {
+		sum += x
+	}
+	t.Log(sum)
+	res := 14
+	if sum != res {
+		t.Fatalf("%d != %d", sum, res)
+	}
 }
 
-func BenchmarkJustProcessor(b *testing.B) {
-	b.Skip()
+var res []int
+
+func BenchmarkChanJ(b *testing.B) {
 	cases := []struct {
 		Name    string
 		Nums    int
@@ -24,7 +34,7 @@ func BenchmarkJustProcessor(b *testing.B) {
 	for _, c := range cases {
 		var r []int
 		nums := util.GenerateRandoms(c.Nums)
-		b.Run(c.Name+" just", func(b *testing.B) {
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				r = Processor(nums, c.Workers, c.Repeats)
 			}

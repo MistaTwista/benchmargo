@@ -4,11 +4,11 @@ package genemin
 
 import (
 	"fmt"
-	"github.com/MistaTwista/generigo/internal/util"
+	"github.com/MistaTwista/benchmargo/internal/util"
 	"testing"
 )
 
-func TestGeneMin(t *testing.T) {
+func TestMinG(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Nums   []int
@@ -18,7 +18,7 @@ func TestGeneMin(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		t.Run(c.Name+" generics", func(t *testing.T) {
+		t.Run(c.Name+"-generics", func(t *testing.T) {
 			r := GFindMin(c.Nums)
 			if r != c.Result {
 				t.Fatal(fmt.Sprintf("want: %d, got: %d", c.Result, r))
@@ -27,7 +27,7 @@ func TestGeneMin(t *testing.T) {
 	}
 }
 
-func BenchmarkGeneMin(b *testing.B) {
+func BenchmarkMinG(b *testing.B) {
 	cases := []struct {
 		Name string
 		Nums int
@@ -42,9 +42,17 @@ func BenchmarkGeneMin(b *testing.B) {
 	for _, c := range cases {
 		rnd := util.GgenerateRandoms(c.Nums)
 		var r int
-		b.Run(c.Name+" generics", func(b *testing.B) {
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				r = GFindMin(rnd)
+			}
+
+			res = r
+		})
+
+		b.Run(c.Name+" embed", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				r = GFindMinEmbed(rnd)
 			}
 
 			res = r

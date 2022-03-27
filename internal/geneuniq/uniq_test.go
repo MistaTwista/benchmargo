@@ -1,15 +1,14 @@
-//go:build generics
-
-package geneslic
+package geneuniq
 
 import (
-	"github.com/MistaTwista/generigo/internal/util"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/MistaTwista/benchmargo/internal/util"
 )
 
-func TestGeneUniq(t *testing.T) {
+func TestUniqJ(t *testing.T) {
 	cases := []struct {
 		Name   string
 		List   []string
@@ -17,18 +16,20 @@ func TestGeneUniq(t *testing.T) {
 	}{
 		{
 			Name:   "simple",
-			List:   util.GenAddeableStrings(10, []string{"one", "two", "three", "four"}...),
+			List:   util.RepeatStrings(10, []string{"one", "two", "three", "four"}...),
 			Result: []string{"one", "two", "three", "four"},
 		},
 	}
 
 	for _, c := range cases {
-		res := GeneUniq(c.List)
+		res := UniqStrings(c.List)
 		assert.Equal(t, c.Result, res)
 	}
 }
 
-func BenchmarkGeneUniq(b *testing.B) {
+var resGlobalStr []string
+
+func BenchmarkUniqStringJ(b *testing.B) {
 	cases := []struct {
 		Name string
 		Nums int
@@ -40,18 +41,20 @@ func BenchmarkGeneUniq(b *testing.B) {
 	}
 
 	for _, c := range cases {
-		list := util.GenAddeableStrings(c.Nums, []string{"one", "two", "three", "four", "five"}...)
+		list := util.RepeatStrings(c.Nums, []string{"one", "two", "three", "four", "five"}...)
 		var result []string
 		b.Run(c.Name, func(b *testing.B) {
 			for n := 0; n < b.N; n++ {
-				result = GeneUniq(list)
+				result = UniqStrings(list)
 			}
 		})
 		resGlobalStr = result
 	}
 }
 
-func BenchmarkGeneUniqInt(b *testing.B) {
+var resGlobalInt []int
+
+func BenchmarkUniqIntJ(b *testing.B) {
 	cases := []struct {
 		Name string
 		Nums int
@@ -63,11 +66,11 @@ func BenchmarkGeneUniqInt(b *testing.B) {
 	}
 
 	for _, c := range cases {
-		list := util.GenAddeableInts(c.Nums, []int{1, 2, 3, 4, 5}...)
+		list := util.RepeatInts(c.Nums, []int{1, 2, 3, 4, 5}...)
 		var result []int
 		b.Run(c.Name, func(b *testing.B) {
 			for n := 0; n < b.N; n++ {
-				result = GeneUniq(list)
+				result = UniqInts(list)
 			}
 		})
 		resGlobalInt = result

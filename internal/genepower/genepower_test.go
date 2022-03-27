@@ -1,14 +1,13 @@
 //go:build generics
-// +build generics
 
-package genechacha
+package genepower
 
 import (
-	"github.com/MistaTwista/generigo/internal/util"
+	"github.com/MistaTwista/benchmargo/internal/util"
 	"testing"
 )
 
-func BenchmarkGenericsProcessor(b *testing.B) {
+func BenchmarkPowerG(b *testing.B) {
 	cases := []struct {
 		Name string
 		Nums int
@@ -24,9 +23,9 @@ func BenchmarkGenericsProcessor(b *testing.B) {
 		var r []int
 		nums := util.GgenerateRandoms[int](c.Nums)
 
-		b.Run(c.Name+" generics", func(b *testing.B) {
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				r = GeneProcessor(nums)
+				r = GenePower(nums)
 			}
 			res = r
 		})

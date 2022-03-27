@@ -3,10 +3,10 @@ package genecon
 import (
 	"testing"
 
-	"github.com/MistaTwista/generigo/internal/util"
+	"github.com/MistaTwista/benchmargo/internal/util"
 )
 
-func BenchmarkJustStringify(b *testing.B) {
+func BenchmarkConJ(b *testing.B) {
 	cases := []struct {
 		Name  string
 		Items []Str
@@ -23,16 +23,16 @@ func BenchmarkJustStringify(b *testing.B) {
 			list = append(list, itm)
 		}
 
-		b.Run(c.Name+" just", func(b *testing.B) {
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				r = Stringify(list)
+				r = Stringify(list...)
 			}
 			res = r
 		})
 	}
 }
 
-func BenchmarkJustStringifyInterface(b *testing.B) {
+func BenchmarkConInterfaceJ(b *testing.B) {
 	cases := []struct {
 		Name  string
 		Items []util.Stringer
@@ -43,9 +43,9 @@ func BenchmarkJustStringifyInterface(b *testing.B) {
 
 	for _, c := range cases {
 		var r []string
-		b.Run(c.Name+" just", func(b *testing.B) {
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				r = Stringify(c.Items)
+				r = Stringify(c.Items...)
 			}
 			res = r
 		})

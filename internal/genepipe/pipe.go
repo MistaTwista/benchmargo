@@ -1,40 +1,13 @@
-package genevari
+package genepipe
 
-func Pipe(fns ...func(int) int) int {
-	var r = int(0)
-	for _, fn := range fns {
-		r = fn(r)
-	}
-
-	return r
-}
-
-func Identity(n int) func(int) int {
-	return func(_ int) int {
-		return n
-	}
-}
-
-func Multiply(i int) int {
-	return i * i
-}
-
-func Plus(i int) int {
-	return i + i
-}
-
-func MultiplyWith(n int) func(int) int {
-	return func(i int) int {
-		return i * n
-	}
-}
-
-func Generator(num int) <-chan int {
+func Generator(num int, seeds ...int) <-chan int {
 	res := make(chan int)
 	go func() {
 		defer close(res)
 		for i := 0; i < num; i++ {
-			res <- i
+			for _, s := range seeds {
+				res <- s
+			}
 		}
 	}()
 
@@ -65,7 +38,20 @@ func Duplicator(numCh <-chan int) <-chan []int {
 	return res
 }
 
-func Summer(numCh <-chan []int) chan int {
+func Flat(numCh <-chan []int) <-chan int {
+	res := make(chan int)
+	go func() {
+		defer close(res)
+		for list := range numCh {
+			for _, n := range list {
+				res <- n
+			}
+		}
+	}()
+	return res
+}
+
+func Add(numCh <-chan int) chan int {
 	res := make(chan int)
 	go func() {
 		var sum int
@@ -74,10 +60,8 @@ func Summer(numCh <-chan []int) chan int {
 			res <- sum
 		}()
 
-		for list := range numCh {
-			for _, n := range list {
-				sum += n
-			}
+		for n := range numCh {
+			sum += n
 		}
 	}()
 

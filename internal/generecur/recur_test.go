@@ -5,20 +5,20 @@ import (
 	"testing"
 )
 
-func TestJustNest(t *testing.T) {
+func TestJustNestRecur(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Nums   int
 		Result int
 	}{
-		{Name: "just 10", Nums: 10, Result: 20},
-		{Name: "just 100", Nums: 100, Result: 200},
-		{Name: "just 1000", Nums: 1000, Result: 2000},
+		{Name: "just-10", Nums: 10, Result: 20},
+		{Name: "just-100", Nums: 100, Result: 200},
+		{Name: "just-1000", Nums: 1000, Result: 2000},
 	}
 
 	for _, c := range cases {
 		t.Run(c.Name, func(t *testing.T) {
-			r := Nest(Box{c.Nums}, c.Nums)
+			r := Sum(c.Nums, c.Nums)
 			if r != c.Result {
 				t.Fatal(fmt.Sprintf("want: %d, got: %d", c.Result, r))
 			}
@@ -28,7 +28,7 @@ func TestJustNest(t *testing.T) {
 
 var res int
 
-func BenchmarkJustNest(b *testing.B) {
+func BenchmarkRecurJ(b *testing.B) {
 	cases := []struct {
 		Name string
 		Nums int
@@ -42,9 +42,9 @@ func BenchmarkJustNest(b *testing.B) {
 
 	for _, c := range cases {
 		var r int
-		b.Run(c.Name+" just", func(b *testing.B) {
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				r = Nest(Box{i}, c.Nums)
+				r = Sum(c.Nums, c.Nums)
 			}
 			res = r
 		})

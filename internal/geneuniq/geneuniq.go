@@ -1,10 +1,8 @@
 //go:build generics
 
-package geneslic
+package geneuniq
 
-import "github.com/MistaTwista/generigo/internal/util"
-
-func GeneUniq[T util.Checkable](list []T) []T {
+func GeneUniq[T comparable](list []T) []T {
 	uniq := make([]T, 0, len(list))
 	index := make(map[T]struct{})
 

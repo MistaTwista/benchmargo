@@ -1,4 +1,4 @@
-module github.com/MistaTwista/generigo
+module github.com/MistaTwista/benchmargo
 
 go 1.18
 

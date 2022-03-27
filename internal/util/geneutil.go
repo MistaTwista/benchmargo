@@ -5,15 +5,11 @@ package util
 import "math/rand"
 
 type Numbers interface {
-	~int | ~uint | ~float32 | ~float64
+	~int | ~int64 | ~int32 | ~uint | ~float32 | ~float64
 }
 
-type Addeable interface {
+type Addable interface {
 	~int | ~float64 | ~string
-}
-
-type Checkable interface {
-	~int | ~string | ~float32 | ~float64
 }
 
 func Repeat[T any](times int, seed ...T) []T {

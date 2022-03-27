@@ -4,23 +4,24 @@ package genestack
 
 import (
 	"fmt"
-	"github.com/MistaTwista/generigo/internal/util"
+	"github.com/MistaTwista/benchmargo/internal/util"
 	"testing"
 )
 
-func TestGeneStack(t *testing.T) {
+func TestStackG(t *testing.T) {
 	s := GStack[any]{}
 	s.Push(42)
 	s.Push(43)
 	s.Push("some")
 	s.Push([]string{"one", "two"})
 	for _, item := range []any{[]string{"one", "two"}, "some", 43, 42} {
-		if ok := s.IsGotSome(); !ok {
+		cur, ok := s.Pop()
+		if !ok {
 			t.Fatal(fmt.Sprintf("nothing left, but you asked %v", item))
 		}
 
 		want := fmt.Sprintf("%v", item)
-		got := fmt.Sprintf("%v", s.Pop())
+		got := fmt.Sprintf("%v", cur)
 
 		if want != got {
 			t.Fatal(fmt.Sprintf("want: %s, got: %s", want, got))
@@ -30,7 +31,7 @@ func TestGeneStack(t *testing.T) {
 
 var data any
 
-func BenchmarkGeneStack(b *testing.B) {
+func BenchmarkStackG(b *testing.B) {
 	cases := []struct {
 		Name string
 		Nums int
@@ -51,8 +52,12 @@ func BenchmarkGeneStack(b *testing.B) {
 					s.Push(x)
 				}
 
-				for s.IsGotSome() {
-					result = s.Pop()
+				for {
+					cur, ok := s.Pop()
+					if !ok {
+						break
+					}
+					result = cur
 				}
 			}
 		})

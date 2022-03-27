@@ -28,15 +28,12 @@ func addWithInterface(a, b interface{}) (interface{}, error) {
 }
 
 func addReflected(a, b interface{}) (interface{}, error) {
-	if reflect.TypeOf(a).Kind() == reflect.Int {
+	switch reflect.TypeOf(a).Kind() {
+	case reflect.Int:
 		return a.(int) + b.(int), nil
-	}
-
-	if reflect.TypeOf(a).Kind() == reflect.Float64 {
+	case reflect.Float64:
 		return a.(float64) + b.(float64), nil
-	}
-
-	if reflect.TypeOf(a).Kind() == reflect.String {
+	case reflect.String:
 		return a.(string) + b.(string), nil
 	}
 
@@ -112,7 +109,8 @@ func addReflectedVari(list ...interface{}) (interface{}, error) {
 	var res interface{}
 
 	for _, itm := range list {
-		if reflect.TypeOf(itm).Kind() == reflect.Int {
+		switch reflect.TypeOf(itm).Kind() {
+		case reflect.Int:
 			if res == nil {
 				res = 0
 			}
@@ -126,9 +124,7 @@ func addReflectedVari(list ...interface{}) (interface{}, error) {
 			}
 
 			res = cur
-		}
-
-		if reflect.TypeOf(itm).Kind() == reflect.Float64 {
+		case reflect.Float64:
 			if res == nil {
 				res = float64(0)
 			}
@@ -142,9 +138,7 @@ func addReflectedVari(list ...interface{}) (interface{}, error) {
 			}
 
 			res = cur
-		}
-
-		if reflect.TypeOf(itm).Kind() == reflect.String {
+		case reflect.String:
 			if res == nil {
 				res = ""
 			}

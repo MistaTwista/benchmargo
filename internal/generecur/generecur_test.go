@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestGeneNest(t *testing.T) {
+func TestRecurG(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Nums   int
@@ -20,7 +20,7 @@ func TestGeneNest(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.Name, func(t *testing.T) {
-			r := GNest(GBox[int]{c.Nums}, c.Nums)
+			r := GSum(c.Nums, c.Nums)
 			if r != c.Result {
 				t.Fatal(fmt.Sprintf("want: %d, got: %d", c.Result, r))
 			}
@@ -28,7 +28,7 @@ func TestGeneNest(t *testing.T) {
 	}
 }
 
-func BenchmarkGeneNest(b *testing.B) {
+func BenchmarkRecurG(b *testing.B) {
 	cases := []struct {
 		Name string
 		Nums int
@@ -42,9 +42,9 @@ func BenchmarkGeneNest(b *testing.B) {
 
 	for _, c := range cases {
 		var r int
-		b.Run(c.Name+" generics", func(b *testing.B) {
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				r = GNest(GBox[int]{i}, c.Nums)
+				r = GSum(c.Nums, c.Nums)
 			}
 			res = r
 		})

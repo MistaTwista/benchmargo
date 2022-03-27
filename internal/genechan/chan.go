@@ -4,47 +4,75 @@ import (
 	"sync"
 )
 
-func Processor(nums []int, workers int, repeats int) []int {
-	tasks := make(chan int, 10)
+func Slice2Chan(repeats int, nums ...int) <-chan int {
 	res := make(chan int, 10)
+	go func() {
+		defer func() {
+			close(res)
+		}()
 
+		for _, n := range nums {
+			for i := 0; i < repeats; i++ {
+				res <- n
+			}
+		}
+	}()
+
+	return res
+}
+
+func Chan2Slice(resultsChan <-chan int) []int {
+	res := make([]int, 0, 10)
+	for r := range resultsChan {
+		res = append(res, r)
+	}
+
+	return res
+}
+
+func Worker(tasksChan <-chan int) <-chan int {
+	res := make(chan int)
+
+	go func() {
+		defer func() {
+			close(res)
+		}()
+
+		for t := range tasksChan {
+			res <- t * t
+		}
+	}()
+
+	return res
+}
+
+func Mix(chList []<-chan int) <-chan int {
+	res := make(chan int)
 	var wg sync.WaitGroup
-	for i := 0; i <= workers; i++ {
+	for _, ch := range chList {
 		wg.Add(1)
-		go func(taskChan chan int) {
+		go func(dataCh <-chan int) {
 			defer wg.Done()
-			for {
-				select {
-				case t, ok := <-taskChan:
-					if !ok {
-						return
-					}
-
-					res <- t * t
-				}
+			for d := range dataCh {
+				res <- d
 			}
-		}(tasks)
+		}(ch)
 	}
 
-	result := make([]int, 0, len(nums))
-	go func(resultsChan chan int) {
-		for {
-			select {
-			case r := <-resultsChan:
-				result = append(result, r)
-			}
-		}
-	}(res)
+	go func() {
+		wg.Wait()
+		close(res)
+	}()
 
-	for _, n := range nums {
-		for i := 0; i < repeats; i++ {
-			tasks <- n
-		}
+	return res
+}
+
+func Processor(nums []int, workers int, repeats int) []int {
+	tasks := Slice2Chan(repeats, nums...)
+	resChans := make([]<-chan int, 0, workers)
+	for i := 0; i <= workers; i++ {
+		resChans = append(resChans, Worker(tasks))
 	}
-	close(tasks)
 
-	wg.Wait()
-	close(res)
-
-	return result
+	return Chan2Slice(Mix(resChans))
 }

@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/MistaTwista/generigo/internal/util"
+	"github.com/MistaTwista/benchmargo/internal/util"
 )
 
-func TestJustAddInt(t *testing.T) {
+func TestJustAddTwoIntPlus(t *testing.T) {
 	cases := []struct {
 		Name   string
 		A      int
@@ -18,21 +18,21 @@ func TestJustAddInt(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		t.Run(c.Name+"interface", func(t *testing.T) {
+		t.Run(c.Name+" interface", func(t *testing.T) {
 			res, _ := addWithInterface(c.A, c.B)
 			result, _ := res.(int)
 			if c.Result != result {
 				t.Fatal("!=")
 			}
 		})
-		t.Run(c.Name+"reflect", func(t *testing.T) {
+		t.Run(c.Name+" reflect", func(t *testing.T) {
 			res, _ := addReflected(c.A, c.B)
 			result, _ := res.(int)
 			if c.Result != result {
 				t.Fatal("!=")
 			}
 		})
-		t.Run(c.Name+"just", func(t *testing.T) {
+		t.Run(c.Name+" just", func(t *testing.T) {
 			res := addInt(c.A, c.B)
 			if c.Result != res {
 				t.Fatal("!=")
@@ -41,7 +41,7 @@ func TestJustAddInt(t *testing.T) {
 	}
 }
 
-func TestJustAddIntVariadic(t *testing.T) {
+func TestJustAddIntVariadicPlus(t *testing.T) {
 	cases := []struct {
 		Name   string
 		List   []interface{}
@@ -77,7 +77,7 @@ func TestJustAddIntVariadic(t *testing.T) {
 	}
 }
 
-func TestJustAddIntsVariadic(t *testing.T) {
+func TestJustAddIntsVariadicPlus(t *testing.T) {
 	cases := []struct {
 		Name   string
 		List   []int
@@ -96,7 +96,7 @@ func TestJustAddIntsVariadic(t *testing.T) {
 	}
 }
 
-func TestJustAddFloats64Variadic(t *testing.T) {
+func TestJustAddFloats64VariadicPlus(t *testing.T) {
 	cases := []struct {
 		Name   string
 		List   []float64
@@ -115,7 +115,7 @@ func TestJustAddFloats64Variadic(t *testing.T) {
 	}
 }
 
-func TestJustAddStringVariadic(t *testing.T) {
+func TestJustAddStringVariadicPlus(t *testing.T) {
 	cases := []struct {
 		Name   string
 		List   []string
@@ -143,7 +143,7 @@ func TestJustAddStringVariadic(t *testing.T) {
 
 var resultInt int
 
-func BenchmarkJustAddInt(b *testing.B) {
+func BenchmarkAddTwoIntJ(b *testing.B) {
 	cases := []struct {
 		Name   string
 		A      int
@@ -155,21 +155,23 @@ func BenchmarkJustAddInt(b *testing.B) {
 
 	for _, c := range cases {
 		var r int
-		b.Run(c.Name+" interface", func(b *testing.B) {
+		b.Run(c.Name+"-interface", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res, _ := addWithInterface(c.A, c.B)
 				r = res.(int)
 			}
 			resultInt = r
 		})
-		b.Run(c.Name+" reflect", func(b *testing.B) {
+
+		b.Run(c.Name+"-reflect", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res, _ := addReflected(c.A, c.B)
 				r = res.(int)
 			}
 			resultInt = r
 		})
-		b.Run(c.Name+" just", func(b *testing.B) {
+
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res := addInt(c.A, c.B)
 				r = res
@@ -181,7 +183,7 @@ func BenchmarkJustAddInt(b *testing.B) {
 
 var resultFloat float64
 
-func BenchmarkJustAddFloat64(b *testing.B) {
+func BenchmarkAddTwoFloat64J(b *testing.B) {
 	cases := []struct {
 		Name   string
 		A      float64
@@ -193,21 +195,23 @@ func BenchmarkJustAddFloat64(b *testing.B) {
 
 	for _, c := range cases {
 		var r float64
-		b.Run(c.Name+" interface", func(b *testing.B) {
+		b.Run(c.Name+"-interface", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res, _ := addWithInterface(c.A, c.B)
 				r = res.(float64)
 			}
 			resultFloat = r
 		})
-		b.Run(c.Name+" reflect", func(b *testing.B) {
+
+		b.Run(c.Name+"-reflect", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res, _ := addReflected(c.A, c.B)
 				r = res.(float64)
 			}
 			resultFloat = r
 		})
-		b.Run(c.Name+" just", func(b *testing.B) {
+
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res := addFloat64(c.A, c.B)
 				r = res
@@ -219,7 +223,7 @@ func BenchmarkJustAddFloat64(b *testing.B) {
 
 var resultString string
 
-func BenchmarkJustAddString(b *testing.B) {
+func BenchmarkAddTwoStringJ(b *testing.B) {
 	cases := []struct {
 		Name   string
 		A      string
@@ -231,28 +235,31 @@ func BenchmarkJustAddString(b *testing.B) {
 
 	for _, c := range cases {
 		var r string
-		b.Run(c.Name+" interface", func(b *testing.B) {
+		b.Run(c.Name+"-interface", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res, _ := addWithInterface(c.A, c.B)
 				r = res.(string)
 			}
 			resultString = r
 		})
-		b.Run(c.Name+" reflect", func(b *testing.B) {
+
+		b.Run(c.Name+"-reflect", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res, _ := addReflected(c.A, c.B)
 				r = res.(string)
 			}
 			resultString = r
 		})
-		b.Run(c.Name+" just", func(b *testing.B) {
+
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res := addString(c.A, c.B)
 				r = res
 			}
 			resultString = r
 		})
-		b.Run(c.Name+" buf", func(b *testing.B) {
+
+		b.Run(c.Name+"-buf", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res := addStringBuf(c.A, c.B)
 				r = res
@@ -262,7 +269,7 @@ func BenchmarkJustAddString(b *testing.B) {
 	}
 }
 
-func BenchmarkJustAddIntVari(b *testing.B) {
+func BenchmarkAddIntsJ(b *testing.B) {
 	cases := []struct {
 		Name string
 		List []int
@@ -274,7 +281,7 @@ func BenchmarkJustAddIntVari(b *testing.B) {
 		var r int
 		interfacedList := util.IntsToInterface(c.List...)
 
-		b.Run(c.Name+" interface", func(b *testing.B) {
+		b.Run(c.Name+"-interface", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res, _ := addWithInterfaceVari(interfacedList...)
 				r = res.(int)
@@ -283,7 +290,7 @@ func BenchmarkJustAddIntVari(b *testing.B) {
 			resultInt = r
 		})
 
-		b.Run(c.Name+" reflected", func(b *testing.B) {
+		b.Run(c.Name+"-reflected", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res, _ := addReflectedVari(interfacedList...)
 				r = res.(int)
@@ -292,7 +299,7 @@ func BenchmarkJustAddIntVari(b *testing.B) {
 			resultInt = r
 		})
 
-		b.Run(c.Name+" int", func(b *testing.B) {
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res := addIntVari(c.List...)
 				r = res
@@ -302,7 +309,7 @@ func BenchmarkJustAddIntVari(b *testing.B) {
 	}
 }
 
-func BenchmarkJustAddFloatVari(b *testing.B) {
+func BenchmarkAddFloatsJ(b *testing.B) {
 	cases := []struct {
 		Name string
 		List []float64
@@ -314,7 +321,7 @@ func BenchmarkJustAddFloatVari(b *testing.B) {
 		var r float64
 		interfacedList := util.FloatsToInterface(c.List...)
 
-		b.Run(c.Name+" interface", func(b *testing.B) {
+		b.Run(c.Name+"-interface", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res, _ := addWithInterfaceVari(interfacedList...)
 				r = res.(float64)
@@ -323,7 +330,7 @@ func BenchmarkJustAddFloatVari(b *testing.B) {
 			resultFloat = r
 		})
 
-		b.Run(c.Name+" reflected", func(b *testing.B) {
+		b.Run(c.Name+"-reflected", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res, _ := addReflectedVari(interfacedList...)
 				r = res.(float64)
@@ -332,7 +339,7 @@ func BenchmarkJustAddFloatVari(b *testing.B) {
 			resultFloat = r
 		})
 
-		b.Run(c.Name+" floats", func(b *testing.B) {
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res := addFloat64Vari(c.List...)
 				r = res
@@ -342,7 +349,7 @@ func BenchmarkJustAddFloatVari(b *testing.B) {
 	}
 }
 
-func BenchmarkJustAddStringsVari(b *testing.B) {
+func BenchmarkAddStringsJ(b *testing.B) {
 	cases := []struct {
 		Name string
 		List []string
@@ -354,7 +361,7 @@ func BenchmarkJustAddStringsVari(b *testing.B) {
 		var r string
 		interfacedList := util.StringsToInterface(c.List...)
 
-		b.Run(c.Name+" interface", func(b *testing.B) {
+		b.Run(c.Name+"-interface", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res, _ := addWithInterfaceVari(interfacedList...)
 				r = res.(string)
@@ -363,7 +370,7 @@ func BenchmarkJustAddStringsVari(b *testing.B) {
 			resultString = r
 		})
 
-		b.Run(c.Name+" reflected", func(b *testing.B) {
+		b.Run(c.Name+"-reflected", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res, _ := addReflectedVari(interfacedList...)
 				r = res.(string)
@@ -372,7 +379,7 @@ func BenchmarkJustAddStringsVari(b *testing.B) {
 			resultString = r
 		})
 
-		b.Run(c.Name+" string", func(b *testing.B) {
+		b.Run(c.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res := addStringVari(c.List...)
 				r = res
@@ -380,7 +387,7 @@ func BenchmarkJustAddStringsVari(b *testing.B) {
 			resultString = r
 		})
 
-		b.Run(c.Name+" string buffered", func(b *testing.B) {
+		b.Run(c.Name+"-buffered", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				res := addStringBufVari(c.List...)
 				r = res

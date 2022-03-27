@@ -1,10 +1,10 @@
 //go:build generics
 
-package genechacha
+package genepower
 
-import "github.com/MistaTwista/generigo/internal/util"
+import "github.com/MistaTwista/benchmargo/internal/util"
 
-func GeneProcessor[T util.Numbers](nums []T) []T {
+func GenePower[T util.Numbers](nums []T) []T {
 	tasks := make(chan T, len(nums))
 	res := make(chan T, len(nums))
 	result := make([]T, 0, len(nums))
