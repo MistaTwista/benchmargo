@@ -1,5 +1,7 @@
 package genechan
 
+import "github.com/MistaTwista/generigo/internal/util"
+
 func chanputin(ch chan int, some int) {
 	ch <- some
 }
@@ -12,15 +14,11 @@ func Proc(num int) int {
 	return <-resCh
 }
 
-type numbers interface {
-	~int | ~uint | ~float32 | ~float64
-}
-
-func gchanputin[T numbers](some T, ch chan T) {
+func gchanputin[T util.Numbers](some T, ch chan T) {
 	ch <- some
 }
 
-func GProc[T numbers](n T) T {
+func GProc[T util.Numbers](n T) T {
 	resCh := make(chan T)
 	go gchanputin(n, resCh)
 

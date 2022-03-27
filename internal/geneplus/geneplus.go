@@ -2,6 +2,7 @@ package geneplus
 
 import (
 	"errors"
+	"github.com/MistaTwista/generigo/internal/util"
 	"reflect"
 	"strings"
 )
@@ -66,11 +67,7 @@ func addGenerics[T int | float64 | string](a, b T) T {
 	return a + b
 }
 
-type Addeable interface {
-	~int | ~float64 | ~string
-}
-
-func addGenericsConstrained[T Addeable](a, b T) T {
+func addGenericsConstrained[T util.Addeable](a, b T) T {
 	return a + b
 }
 
@@ -221,19 +218,10 @@ func addGenericsVari[T int | float64 | string](list ...T) T {
 	return res
 }
 
-func addGenericsConstrainedVari[T Addeable](list ...T) T {
+func addGenericsConstrainedVari[T util.Addeable](list ...T) T {
 	var res T
 	for _, itm := range list {
 		res += itm
-	}
-
-	return res
-}
-
-func genData[T Addeable](num int, seed ...T) []T {
-	res := make([]T, 0, num)
-	for i := 0; i < num; i++ {
-		res = append(res, seed...)
 	}
 
 	return res

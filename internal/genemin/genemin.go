@@ -5,22 +5,6 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-func GMin[T constraints.Ordered](a, b T) T {
-	if a < b {
-		return a
-	}
-
-	return b
-}
-
-func MinInt(a, b int) int {
-	if a < b {
-		return a
-	}
-
-	return b
-}
-
 func FindMin(list []int) int {
 	var res int = 0
 
@@ -30,10 +14,18 @@ func FindMin(list []int) int {
 			continue
 		}
 
-		MinInt(res, n)
+		res = MinInt(res, n)
 	}
 
 	return res
+}
+
+func MinInt(a, b int) int {
+	if a < b {
+		return a
+	}
+
+	return b
 }
 
 func GFindMin[T util.Numbers](list []T) T {
@@ -45,8 +37,16 @@ func GFindMin[T util.Numbers](list []T) T {
 			continue
 		}
 
-		GMin[T](res, n)
+		res = GMin[T](res, n)
 	}
 
 	return res
+}
+
+func GMin[T constraints.Ordered](a, b T) T {
+	if a < b {
+		return a
+	}
+
+	return b
 }

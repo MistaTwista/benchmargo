@@ -1,6 +1,9 @@
 package genechan
 
-import "sync"
+import (
+	"github.com/MistaTwista/generigo/internal/util"
+	"sync"
+)
 
 func Processor(nums []int, workers int, repeats int) []int {
 	tasks := make(chan int, 10)
@@ -47,11 +50,7 @@ func Processor(nums []int, workers int, repeats int) []int {
 	return result
 }
 
-type numbers interface {
-	~int | ~uint | ~float32 | ~float64
-}
-
-func GeneProcessor[T numbers](nums []T, workers int, repeats int) []T {
+func GeneProcessor[T util.Numbers](nums []T, workers int, repeats int) []T {
 	tasks := make(chan T)
 	res := make(chan T)
 

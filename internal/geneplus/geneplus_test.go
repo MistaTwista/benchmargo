@@ -3,6 +3,8 @@ package geneplus
 import (
 	"fmt"
 	"testing"
+
+	"github.com/MistaTwista/generigo/internal/util"
 )
 
 func Test_AddInt(t *testing.T) {
@@ -237,7 +239,7 @@ func BenchmarkAddInt(b *testing.B) {
 		})
 		b.Run(c.Name+" constrained generics", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				res := addGenerics(c.A, c.B)
+				res := addGenericsConstrained(c.A, c.B)
 				r = res
 			}
 			resultInt = r
@@ -289,7 +291,7 @@ func BenchmarkAddFloat64(b *testing.B) {
 		})
 		b.Run(c.Name+" constrained generics", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				res := addGenerics(c.A, c.B)
+				res := addGenericsConstrained(c.A, c.B)
 				r = res
 			}
 			resultFloat = r
@@ -348,7 +350,7 @@ func BenchmarkAddString(b *testing.B) {
 		})
 		b.Run(c.Name+" constrained generics", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				res := addGenerics(c.A, c.B)
+				res := addGenericsConstrainedVari(c.A, c.B)
 				r = res
 			}
 			resultString = r
@@ -356,26 +358,17 @@ func BenchmarkAddString(b *testing.B) {
 	}
 }
 
-func ToInterface[T Addeable](list ...T) []interface{} {
-	interfacedList := make([]interface{}, 0, len(list))
-	for _, itm := range list {
-		interfacedList = append(interfacedList, itm)
-	}
-
-	return interfacedList
-}
-
 func BenchmarkAddIntVari(b *testing.B) {
 	cases := []struct {
 		Name string
 		List []int
 	}{
-		{Name: "ints", List: genData(10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)},
+		{Name: "ints", List: util.GenAddeable(10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)},
 	}
 
 	for _, c := range cases {
 		var r int
-		interfacedList := ToInterface[int](c.List...)
+		interfacedList := util.AddeableToInterface[int](c.List...)
 
 		b.Run(c.Name+" interface", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
@@ -426,12 +419,12 @@ func BenchmarkAddFloatVari(b *testing.B) {
 		Name string
 		List []float64
 	}{
-		{Name: "floats", List: genData[float64](10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)},
+		{Name: "floats", List: util.GenAddeable[float64](10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)},
 	}
 
 	for _, c := range cases {
 		var r float64
-		interfacedList := ToInterface[float64](c.List...)
+		interfacedList := util.AddeableToInterface[float64](c.List...)
 
 		b.Run(c.Name+" interface", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
@@ -482,12 +475,12 @@ func BenchmarkAddStringsVari(b *testing.B) {
 		Name string
 		List []string
 	}{
-		{Name: "strings", List: genData[string](10, "one", "two", "three", "four", "five")},
+		{Name: "strings", List: util.GenAddeable[string](10, "one", "two", "three", "four", "five")},
 	}
 
 	for _, c := range cases {
 		var r string
-		interfacedList := ToInterface[string](c.List...)
+		interfacedList := util.AddeableToInterface[string](c.List...)
 
 		b.Run(c.Name+" interface", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {

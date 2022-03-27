@@ -9,7 +9,7 @@ func GNest[A int | int64 | int32](b GBox[A], n int) A {
 		return b.value
 	}
 
-	return GNest(GBox[A]{b.value}, n-1)
+	return GNest(GBox[A]{b.value + 1}, n-1)
 }
 
 type Box struct {
@@ -21,5 +21,5 @@ func Nest(b Box, n int) int {
 		return b.value
 	}
 
-	return Nest(Box{b.value}, n-1)
+	return Nest(Box{b.value + 1}, n-1)
 }

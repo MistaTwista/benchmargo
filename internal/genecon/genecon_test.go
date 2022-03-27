@@ -37,21 +37,30 @@ func BenchmarkGProcessor(b *testing.B) {
 		Name  string
 		Items []Str
 	}{
-		{Name: "just generic 10", Items: gena(10)},
-		{Name: "just generic 100", Items: gena(100)},
+		{Name: "10", Items: gena(10)},
+		{Name: "100", Items: gena(100)},
 	}
 
 	for _, c := range cases {
 		var r []string
-		//generated := generator[int](10)
-		b.Run(c.Name, func(b *testing.B) {
+		b.Run(c.Name+" generics", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				//b.Log(i, b.N)
 				r = GStringify(c.Items)
 			}
 			res = r
 		})
-		//b.Log(res)
+
+		list := make([]Stringer, 0, len(c.Items))
+		for _, itm := range c.Items {
+			list = append(list, itm)
+		}
+
+		b.Run(c.Name+" just", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				r = Stringify(list)
+			}
+			res = r
+		})
 	}
 }
 
@@ -60,71 +69,24 @@ func BenchmarkGProcessorInterface(b *testing.B) {
 		Name  string
 		Items []Stringer
 	}{
-		{Name: "generic interface iteration 10", Items: NewStringer(gena(10))},
-		{Name: "generic interface iteration 100", Items: NewStringer(gena(100))},
+		{Name: "10", Items: NewStringer(gena(10))},
+		{Name: "100", Items: NewStringer(gena(100))},
 	}
 
 	for _, c := range cases {
 		var r []string
-		//generated := generator[int](10)
-		b.Run(c.Name, func(b *testing.B) {
+		b.Run(c.Name+" generics", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				//b.Log(i, b.N)
 				r = GStringify(c.Items)
 			}
 			res = r
 		})
-		//b.Log(res)
-	}
-}
 
-func BenchmarkProcessor(b *testing.B) {
-	cases := []struct {
-		Name  string
-		Items []Str
-	}{
-		{Name: "non generic 10", Items: gena(10)},
-		{Name: "non generic 100", Items: gena(100)},
-	}
-
-	for _, c := range cases {
-		var r []string
-		//generated := generator[int](10)
-		list := make([]Stringer, 0, len(c.Items))
-		for _, itm := range c.Items {
-			list = append(list, itm)
-		}
-
-		b.Run(c.Name, func(b *testing.B) {
+		b.Run(c.Name+" just", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				//b.Log(i, b.N)
-				r = Stringify(list)
-			}
-			res = r
-		})
-		//b.Log(res)
-	}
-}
-
-func BenchmarkProcessorInterface(b *testing.B) {
-	cases := []struct {
-		Name  string
-		Items []Stringer
-	}{
-		{Name: "non generic by interface 10", Items: NewStringer(gena(10))},
-		{Name: "non generic by interface 100", Items: NewStringer(gena(100))},
-	}
-
-	for _, c := range cases {
-		var r []string
-		//generated := generator[int](10)
-		b.Run(c.Name, func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				//b.Log(i, b.N)
 				r = Stringify(c.Items)
 			}
 			res = r
 		})
-		//b.Log(res)
 	}
 }

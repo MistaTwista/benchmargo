@@ -37,7 +37,7 @@ func Processor() (uint64, uint64) {
 		}
 	}()
 
-	randomchik := util.Rnd(5)
+	randomchik := util.Grnd(5)
 	for r := 0; r < 100; r++ {
 		go func() {
 			for {
